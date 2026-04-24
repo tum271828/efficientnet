@@ -31,6 +31,7 @@ import math
 import string
 import collections
 
+import tensorflow as tf
 from six.moves import xrange
 from keras_applications.imagenet_utils import _obtain_input_shape
 from keras_applications.imagenet_utils import preprocess_input as _preprocess_input
@@ -110,7 +111,13 @@ def get_swish(**kwargs):
                 # memory-efficient gradient implementation
                 return backend.tf.nn.swish(x)
             except AttributeError:
-                pass
+                try:
+                    # The native TF implementation has a more
+                    # memory-efficient gradient implementation
+                    #return backend.tf.nn.swish(x)
+                    return tf.nn.swish(x)
+                except AttributeError:
+                    pass
 
         return x * backend.sigmoid(x)
 
